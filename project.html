@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>AskMe</title>
+    <style> 
+        body { 
+            font-family: 'Times New Roman'; 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            background-color: #f4f4f4; 
+        } 
+ 
+        header { 
+            background-color: #333; 
+            color: white; 
+            padding: 20px; 
+            text-align: center; 
+        } 
+ 
+        header h1 span { 
+            color: red; 
+        } 
+ 
+        nav { 
+            display: flex; 
+            justify-content: center; 
+        } 
+ 
+        nav ul { 
+            list-style: none; 
+            margin: 0; 
+            padding: 0; 
+        } 
+ 
+        nav a { 
+            text-decoration: none; 
+            color: white; 
+            font-weight: bold; 
+            font-size: 16px; 
+            transition: color 0.3s ease; 
+        } 
+ 
+        nav a:hover { 
+            color: #ffd700; 
+        } 
+ 
+        section { 
+            display: flex; 
+            justify-content: space-around; 
+            padding: 40px; 
+        } 
+ 
+        article { 
+            flex: 1; 
+            margin: 0 20px; 
+            background-color: white; 
+            color: white; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+            padding: 20px; 
+        } 
+ 
+        h2 { 
+            color: #333; 
+        } 
+ 
+        p { 
+            color: black; 
+        } 
+       
+        footer { 
+            background-color: #333; 
+            color: rgb(255, 0, 0); 
+            text-align: center; 
+            padding: 20px; 
+            position: fixed; 
+            bottom: 0; 
+            width: 100%; 
+        } 
+ 
+        .modal { 
+            display: none; 
+            position: fixed; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            background-color: white; 
+            padding: 20px; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+            z-index: 999; 
+        } 
+ 
+        .message-box { 
+            background-color: #fff; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+            padding: 20px; 
+        } 
+ 
+        .message-input { 
+            width: 100%; 
+            padding: 10px; 
+            margin-bottom: 10px; 
+            box-sizing: border-box; 
+            border: 1px solid #ddd; 
+            border-radius: 5px; 
+        } 
+        
+        .submit-button { 
+            background-color: red; 
+            color: white; 
+            padding: 10px; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+        } 
+        
+    </style> 
+</head> 
+ 
+<body> 
+    <header> 
+        <h1>ASK<span style="color: red;">ME</span></h1> 
+    </header> 
+ 
+    <section> 
+        <article class="message-box"> 
+            <h2>Your Talents</h2> 
+            <form onsubmit="sendMessage(event)"> 
+                <label for="messageInput"><p2>List your talents:</p2></label> 
+                <textarea id="messageInput" class="message-input" rows="4" placeholder="Type your message here..."></textarea> 
+                <button type="submit" class="submit-button">Submit</button> 
+            </form> 
+        </article> 
+ 
+        <article> 
+            <h2>Jobs Suitable</h2> 
+            <div id="chat-output"></div> 
+        </article> 
+    </section> 
+ 
+    <footer> 
+        <p2>Andrii Balukh w65434</p2> 
+    </footer> 
+
+    <script>
+        const apiKey = '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';
+        const endpoint = 'https://api.openai.com/v1/chat/completions';
+
+        async function sendMessage(event) {
+            event.preventDefault();
+            const userInput = document.getElementById('messageInput').value + ". What professions can you suggest me with my talents?, Please give me only the names of the professions in a list";
+            const chatOutput = document.getElementById('chat-output');
+
+            
+
+            
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`
+                },
+                body: JSON.stringify({
+                    model : "gpt-3.5-turbo",
+                    messages: [
+                        { role: 'system', content: 'You are a helpful assistant.' },
+                        { role: 'user', content: userInput }
+                    ]
+                })
+            });
+            
+            console.log(response);
+            const responseData = await response.json();
+            console.log(responseData);
+            const chatGPTResponse = responseData.choices[0].message.content;
+            console.log(chatGPTResponse);
+            chatOutput.innerHTML = `<p>AskMe: ${chatGPTResponse}</p>`;
+            document.getElementById('messageInput').value = '';
+        }
+    </script>
+</body>
+
+</html>
